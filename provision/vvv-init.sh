@@ -23,7 +23,7 @@ touch ${VVV_PATH_TO_SITE}/log/access.log
 # Install and configure the latest stable version of WordPress
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-load.php" ]]; then
     echo "Downloading WordPress..."
-	noroot wp core download --version="${WP_VERSION}"
+  noroot wp core download --version="${WP_VERSION}"
 fi
 
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
@@ -45,6 +45,18 @@ if ! $(noroot wp core is-installed); then
   fi
 
   noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+
+  # Remove default plugins and themes
+  noroot wp plugin uninstall hello-dolly akismet
+  noroot wp theme uninstall twentyfifteen twentysixteen
+
+  # Install common plugins
+  noroot wp plugin install wordpress-seo gravityformscli regenerate-thumbnails disable-emojis wp-comment-humility --activate
+
+  # Download and active EJO Base
+  git clone https://github.com/erikjoling/ejo-base.git ${VVV_PATH_TO_SITE}/public_html/wp-content/plugins/ejo-base
+  noroot wp plugin activate ejo-base
+
 else
   echo "Updating WordPress Stable..."
   cd ${VVV_PATH_TO_SITE}/public_html
