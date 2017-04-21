@@ -74,6 +74,9 @@ if ! $(noroot wp core is-installed); then
   git clone https://github.com/erikjoling/ejo-base.git ${VVV_PATH_TO_SITE}/public_html/wp-content/plugins/ejo-base
   noroot wp plugin activate ejo-base
 
+  # Remove Default Widgets from sidebars
+  noroot wp widget delete recent-comments-2 search-2 recent-posts-2 archives-2 categories-2 meta-2
+
 else
   echo "Updating WordPress Stable..."
   cd ${VVV_PATH_TO_SITE}/public_html
