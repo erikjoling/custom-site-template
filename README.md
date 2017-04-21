@@ -1,5 +1,5 @@
 # VVV Custom site template
-For when you just need a simple dev site
+For when you just need a new WordPress site
 
 ## Overview
 This template will allow you to create a WordPress dev environment using only `vvv-custom.yml`.
@@ -9,13 +9,18 @@ The supported environments are:
 - A subdomain multisite
 - A subdirectory multisite
 
+## Todo
+- Find a good way to install gravityforms (with licensekey)
+- Download Github Updater plugin (activation not necessary)
+- Maybe create and install new custom theme (based on EJO Starter Theme)?
+
 # Configuration
 
 ### The minimum required configuration:
 
 ```
 my-site:
-  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template
+  repo: https://github.com/erikjoling/vvv-import-site-template
   hosts:
     - my-site.dev
 ```
@@ -31,7 +36,7 @@ my-site:
 
 ```
 my-site:
-  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template
+  repo: https://github.com/erikjoling/vvv-import-site-template
   hosts:
     - foo.dev
   custom:
@@ -49,7 +54,7 @@ my-site:
 
 ```
 my-site:
-  repo: https://github.com/Varying-Vagrant-Vagrants/custom-site-template
+  repo: https://github.com/erikjoling/vvv-import-site-template
   hosts:
     - multisite.dev
     - site1.multisite.dev

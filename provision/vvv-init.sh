@@ -31,7 +31,7 @@ if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
   noroot wp core config --dbname="${DB_NAME}" --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 /** For developers: WordPress debugging mode. */
 define( 'WP_DEBUG', true );
-define('SAVEQUERIES', false); // Only activate when researching
+define( 'SAVEQUERIES', false ); // Only activate when researching
 
 /** Extra debugging */
 if (WP_DEBUG) {
@@ -64,9 +64,11 @@ if ! $(noroot wp core is-installed); then
   # Install Gravity Forms (license key is required either in the GF_LICENSE_KEY constant or the --key option.)
   # noroot wp gf install -key=xxxxx
 
-  # Download and active EJO Base
+  # Download and activate EJO Base
   git clone https://github.com/erikjoling/ejo-base.git ${VVV_PATH_TO_SITE}/public_html/wp-content/plugins/ejo-base
   noroot wp plugin activate ejo-base
+
+  # Download GitHub Updater (without gitconfig stuff)
 
 else
   echo "Updating WordPress Stable..."
