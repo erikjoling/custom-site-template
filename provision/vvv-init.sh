@@ -54,9 +54,15 @@ if ! $(noroot wp core is-installed); then
 
   noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 
+  # Download GitHub Updater (without gitconfig stuff)
+
+  # Install and activate EJO Starter Theme
+  git clone https://github.com/erikjoling/ejo-starter-theme.git ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/ejo-starter-theme
+  noroot wp theme activate ejo-starter-theme
+
   # Remove default plugins and themes
   noroot wp plugin uninstall hello akismet
-  noroot wp theme uninstall twentyfifteen twentysixteen
+  noroot wp theme uninstall twentyfifteen twentysixteen twentyseventeen
 
   # Install common plugins
   noroot wp plugin install wordpress-seo gravityformscli regenerate-thumbnails disable-emojis wp-comment-humility safe-redirect-manager --activate
@@ -67,8 +73,6 @@ if ! $(noroot wp core is-installed); then
   # Download and activate EJO Base
   git clone https://github.com/erikjoling/ejo-base.git ${VVV_PATH_TO_SITE}/public_html/wp-content/plugins/ejo-base
   noroot wp plugin activate ejo-base
-
-  # Download GitHub Updater (without gitconfig stuff)
 
 else
   echo "Updating WordPress Stable..."
