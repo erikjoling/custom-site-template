@@ -47,11 +47,14 @@ if ! $(noroot wp core is-installed); then
   noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 
   # Remove default plugins and themes
-  noroot wp plugin uninstall hello-dolly akismet
+  noroot wp plugin uninstall hello akismet
   noroot wp theme uninstall twentyfifteen twentysixteen
 
   # Install common plugins
-  noroot wp plugin install wordpress-seo gravityformscli regenerate-thumbnails disable-emojis wp-comment-humility --activate
+  noroot wp plugin install wordpress-seo gravityformscli regenerate-thumbnails disable-emojis wp-comment-humility safe-redirect-manager --activate
+
+  # Install Gravity Forms (license key is required either in the GF_LICENSE_KEY constant or the --key option.)
+  # noroot wp gf install -key=xxxxx
 
   # Download and active EJO Base
   git clone https://github.com/erikjoling/ejo-base.git ${VVV_PATH_TO_SITE}/public_html/wp-content/plugins/ejo-base
