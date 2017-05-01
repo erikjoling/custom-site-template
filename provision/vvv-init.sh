@@ -42,6 +42,9 @@ PHP
 fi
 
 if ! $(noroot wp core is-installed); then
+
+  ### WORDPRESS CORE ###
+
   echo "Installing WordPress Stable..."
 
   if [ "${WP_TYPE}" = "subdomain" ]; then
@@ -54,28 +57,46 @@ if ! $(noroot wp core is-installed); then
 
   noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 
-  # Download GitHub Updater (without gitconfig stuff)
+
+  ### THEME ###
 
   # Install and activate EJO Starter Theme
   git clone https://github.com/erikjoling/ejo-starter-theme.git ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/ejo-starter-theme
   noroot wp theme activate ejo-starter-theme
 
-  # Remove default plugins and themes
-  noroot wp plugin uninstall hello akismet
+  # Remove default themes
   noroot wp theme uninstall twentyfifteen twentysixteen twentyseventeen
 
-  # Install common plugins
-  noroot wp plugin install wordpress-seo gravityformscli regenerate-thumbnails disable-emojis wp-comment-humility safe-redirect-manager carbon-fields --activate
 
+  ### PLUGINS ### 
+
+  # Remove default plugins
+  noroot wp plugin uninstall hello akismet
+
+  # Download GitHub Updater (without gitconfig stuff)
+
+  # Install common plugins
+  noroot wp plugin install wordpress-seo gravityformscli regenerate-thumbnails disable-emojis wp-comment-humility safe-redirect-manager carbon-fields
+  
   # Install Gravity Forms (license key is required either in the GF_LICENSE_KEY constant or the --key option.)
   # noroot wp gf install -key=xxxxx
 
-  # Download and activate EJO Base
+  # Install EJO Base
   git clone https://github.com/erikjoling/ejo-base.git ${VVV_PATH_TO_SITE}/public_html/wp-content/plugins/ejo-base
-  noroot wp plugin activate ejo-base
 
-  # Remove Default Widgets from sidebars
+  # Activate the plugins
+  noroot wp plugin activate wordpress-seo gravityformscli regenerate-thumbnails disable-emojis wp-comment-humility safe-redirect-manager carbon-fields ejo-base
+
+
+  ### OTHER ###
+ 
+  # Remove default Widgets from sidebars
   noroot wp widget delete recent-comments-2 search-2 recent-posts-2 archives-2 categories-2 meta-2
+
+  # Import default content
+  # Timezone?
+  # Subtitle?
+  # Permalink settings?
 
 else
   echo "Updating WordPress Stable..."
