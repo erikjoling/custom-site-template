@@ -65,7 +65,7 @@ if ! $(noroot wp core is-installed); then
   noroot wp theme uninstall twentyfifteen twentysixteen twentyseventeen
 
   # Install common plugins
-  noroot wp plugin install wordpress-seo gravityformscli regenerate-thumbnails disable-emojis wp-comment-humility safe-redirect-manager --activate
+  noroot wp plugin install wordpress-seo gravityformscli regenerate-thumbnails disable-emojis wp-comment-humility safe-redirect-manager carbon-fields --activate
 
   # Install Gravity Forms (license key is required either in the GF_LICENSE_KEY constant or the --key option.)
   # noroot wp gf install -key=xxxxx
