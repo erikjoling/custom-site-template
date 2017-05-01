@@ -1,4 +1,7 @@
-
+# Ignore generated project files
 /log/
 /provision/vvv-nginx.conf
 /public_html
+
+# Ignore my own local files
+*.sublime*
