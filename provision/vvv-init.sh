@@ -80,6 +80,9 @@ if ! $(noroot wp core is-installed); then
   
   # Install Gravity Forms (license key is required either in the GF_LICENSE_KEY constant or the --key option.)
   # noroot wp gf install -key=xxxxx
+  # Euro valuta
+  # No css output
+  # Sample form
 
   # Install EJO Base
   git clone https://github.com/erikjoling/ejo-base.git ${VVV_PATH_TO_SITE}/public_html/wp-content/plugins/ejo-base
@@ -97,6 +100,9 @@ if ! $(noroot wp core is-installed); then
   # Timezone?
   # Subtitle?
   # Permalink settings?
+  # Statische pagina home als voorpagina instellen
+  # Zoekmachines blokkeren
+  # Reacties en avatars uitschakelen
 
 else
   echo "Updating WordPress Stable..."
