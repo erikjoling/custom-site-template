@@ -58,16 +58,6 @@ if ! $(noroot wp core is-installed); then
   noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 
 
-  ### THEME ###
-
-  # Install and activate EJO Starter Theme
-  git clone https://github.com/erikjoling/ejo-starter-theme.git ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/ejo-starter-theme
-  noroot wp theme activate ejo-starter-theme
-
-  # Remove default themes
-  noroot wp theme uninstall twentyfifteen twentysixteen twentyseventeen
-
-
   ### PLUGINS ### 
 
   # Remove default plugins
@@ -89,6 +79,16 @@ if ! $(noroot wp core is-installed); then
 
   # Activate the plugins
   noroot wp plugin activate wordpress-seo gravityformscli regenerate-thumbnails disable-emojis wp-comment-humility safe-redirect-manager carbon-fields ejo-base
+
+  
+  ### THEME ###
+
+  # Install and activate EJO Starter Theme
+  git clone https://github.com/erikjoling/ejo-starter-theme.git ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/ejo-starter-theme
+  noroot wp theme activate ejo-starter-theme
+
+  # Remove default themes
+  noroot wp theme uninstall twentyfifteen twentysixteen twentyseventeen
 
 
   ### OTHER ###
