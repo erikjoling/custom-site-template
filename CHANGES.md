@@ -1,0 +1,2 @@
+- Git clone EJO Starter Theme with all submodules
+- Don't use EJO Base and Carbon Fields as a plugin anymore

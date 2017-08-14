@@ -66,7 +66,7 @@ if ! $(noroot wp core is-installed); then
   # Download GitHub Updater (without gitconfig stuff)
 
   # Install common plugins
-  noroot wp plugin install wordpress-seo gravityformscli regenerate-thumbnails disable-emojis wp-comment-humility safe-redirect-manager carbon-fields
+  noroot wp plugin install wordpress-seo gravityformscli regenerate-thumbnails wp-comment-humility safe-redirect-manager --activate
   
   # Install Gravity Forms (license key is required either in the GF_LICENSE_KEY constant or the --key option.)
   # noroot wp gf install -key=xxxxx
@@ -74,17 +74,11 @@ if ! $(noroot wp core is-installed); then
   # No css output
   # Sample form
 
-  # Install EJO Base
-  git clone https://github.com/erikjoling/ejo-base.git ${VVV_PATH_TO_SITE}/public_html/wp-content/plugins/ejo-base
 
-  # Activate the plugins
-  noroot wp plugin activate wordpress-seo gravityformscli regenerate-thumbnails disable-emojis wp-comment-humility safe-redirect-manager carbon-fields ejo-base
-
-  
   ### THEME ###
 
-  # Install and activate EJO Starter Theme
-  git clone https://github.com/erikjoling/ejo-starter-theme.git ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/ejo-starter-theme
+  # Install and activate EJO Starter Theme (If working on theme, don't forget to force submodule check: git config push.recurseSubmodules check)
+  git clone --recursive https://github.com/erikjoling/ejo-starter-theme.git ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/ejo-starter-theme
   noroot wp theme activate ejo-starter-theme
 
   # Remove default themes
