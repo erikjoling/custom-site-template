@@ -1,121 +1,40 @@
 # VVV Custom site template
 For when you just need a new WordPress site
 
-- Version: 1.0-beta
+- Version: 1.0-beta-2
 - Author: Erik Joling <erik@joling.me>
 
 ## Overview
 This template will allow you to create a WordPress dev environment using only `vvv-custom.yml`.
 
-The supported environments are:
-- A single site
-- A subdomain multisite
-- A subdirectory multisite
+This is a custom fork of the official VVV custom site template. [See their repo for more documentation](https://github.com/Varying-Vagrant-Vagrants/custom-site-template).
 
 ## Todo
-- Find a good way to install gravityforms (with licensekey)
-- Download Github Updater plugin (activation not necessary)
 - Maybe create and install new custom theme (based on EJO Starter Theme)?
 
 # Configuration
 
-### The minimum required configuration:
-
 ```
 my-site:
-  repo: https://github.com/erikjoling/vvv-import-site-template
+  repo: location_of_custom_provisioner
   hosts:
-    - my-site.dev
-```
-| Setting    | Value       |
-|------------|-------------|
-| Domain     | my-site.dev |
-| Site Title | my-site.dev |
-| DB Name    | my-site     |
-| Site Type  | Single      |
-| WP Version | Latest      |
-
-### Minimal configuration with custom domain and WordPress Nightly:
-
-```
-my-site:
-  repo: https://github.com/erikjoling/vvv-import-site-template
-  hosts:
-    - foo.dev
+    - host_1 (primary)
+    - host_2
+    [...]
   custom:
-    wp_version: nightly
-```
-| Setting    | Value       |
-|------------|-------------|
-| Domain     | foo.dev     |
-| Site Title | foo.dev     |
-| DB Name    | my-site     |
-| Site Type  | Single      |
-| WP Version | Nightly     |
-
-### WordPress Multisite with Subdomains:
-
-```
-my-site:
-  repo: https://github.com/erikjoling/vvv-import-site-template
-  hosts:
-    - multisite.dev
-    - site1.multisite.dev
-    - site2.multisite.dev
-  custom:
-    wp_type: subdomain
-```
-| Setting    | Value               |
-|------------|---------------------|
-| Domain     | multisite.dev       |
-| Site Title | multisite.dev       |
-| DB Name    | my-site             |
-| Site Type  | Subdomain Multisite |
-| WP Version | Nightly             |
-
-## Configuration Options
-
-```
-hosts:
-    - foo.dev
-    - bar.dev
-    - baz.dev
-```
-Defines the domains and hosts for VVV to listen on. 
-The first domain in this list is your sites primary domain.
-
-```
-custom:
-    site_title: My Awesome Dev Site
-```
-Defines the site title to be set upon installing WordPress.
-
-```
-custom:
-    wp_version: 4.6.4
-```
-Defines the WordPress version you wish to install.
-Valid values are:
-- nightly
-- latest
-- a version number
-
-Older versions of WordPress will not run on PHP7, see this page on [how to change PHP version per site](https://varyingvagrantvagrants.org/docs/en-US/adding-a-new-site/changing-php-version/).
-
-```
-custom:
-    wp_type: single
-```
-Defines the type of install you are creating.
-Valid values are:
-- single
-- subdomain
-- subdirectory
-
-```
-custom:
+    wp_version: [latest, nightly, version number]
+    wp_type: [single, subdomain, subdirectory]
+    site_title: site_title_of_wordpress
     db_name: super_secet_db_name
+    gf_license: gravityforms_licence_key (custom setting)
+
 ```
-Defines the DB name for the installation.
 
+### Example: The minimum required configuration:
 
+```
+my-site:
+  repo: https://github.com/erikjoling/custom-site-template.git
+  hosts:
+    - my-site.test
+```

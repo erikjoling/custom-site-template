@@ -1,3 +1,6 @@
+1.0-beta-2
+- Improved documentation
+
 1.0-beta
 - Added documentation
 - Switched from cloning github to wp-cli for github-updater and ejo-starter-theme
