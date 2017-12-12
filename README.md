@@ -1,6 +1,9 @@
 # VVV Custom site template
 For when you just need a new WordPress site
 
+- Version: 1.0-beta
+- Author: Erik Joling <erik@joling.me>
+
 ## Overview
 This template will allow you to create a WordPress dev environment using only `vvv-custom.yml`.
 
