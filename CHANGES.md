@@ -1,3 +1,7 @@
+1.0-beta-3
+- Improved wp-config generation documentation
+- Added post-revision option to wp-config build process
+
 1.0-beta-2
 - Improved documentation
 

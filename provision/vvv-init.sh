@@ -44,15 +44,27 @@ fi
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
     echo "Configuring WordPress Stable..."
     noroot wp core config --dbname="${DB_NAME}" --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-/** For developers: WordPress debugging mode. */
-define( 'WP_DEBUG', true );
-define( 'SAVEQUERIES', false ); // Only activate when researching
+/**
+ * CUSTOM 
+ */
 
-/** Extra debugging */
+/** Main debug setting */
+define( 'WP_DEBUG', true );
+
 if (WP_DEBUG) {
     define('SCRIPT_DEBUG', true);
     define('WP_DEBUG_LOG', true);
 }
+
+/** Only activate when researching (heavy on resources) */
+define( 'SAVEQUERIES', false );
+
+/** Limit post revisions to 5 at max */
+define( 'WP_POST_REVISIONS', 5 );
+
+/**
+ * END CUSTOM
+ */
 PHP
 fi
 
