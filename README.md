@@ -1,7 +1,7 @@
 # VVV Custom site template
 For when you just need a new WordPress site
 
-- Version: 1.0-beta-3
+- Version: 1.0-beta-4
 - Author: Erik Joling <erik@joling.me>
 
 ## Overview

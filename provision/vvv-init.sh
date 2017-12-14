@@ -62,6 +62,9 @@ define( 'SAVEQUERIES', false );
 /** Limit post revisions to 5 at max */
 define( 'WP_POST_REVISIONS', 5 );
 
+/** Don't allow file editing from inside WordPress */
+define('DISALLOW_FILE_EDIT', true);
+
 /**
  * END CUSTOM
  */
