@@ -1,3 +1,7 @@
+1.0-beta-5
+- Fixed `wp core is-installed` check
+- dos2unix to fix line-ending 
+
 1.0-beta-4
 - Disabled file-editing from wp-admin in wp-config
 

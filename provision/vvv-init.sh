@@ -23,17 +23,28 @@ GF_KEY=`get_config_value 'gf_licence' ""`
 DB_NAME=`get_config_value 'db_name' "${VVV_SITE_NAME}"`
 DB_NAME=${DB_NAME//[\\\/\.\<\>\:\"\'\|\?\!\*-]/}
 
+cd ${VVV_PATH_TO_SITE}/public_html
 
-# Make a database, if we don't already have one
-echo -e "\nCreating database '${DB_NAME}' (if it's not already there)"
-mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME}"
-mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO wp@localhost IDENTIFIED BY 'wp';"
-echo -e "\n DB operations done.\n\n"
+# 2. Create database and server-stuff if WordPress doesn't exist
+if ( ! $(noroot wp core is-installed) ); then
 
-# Nginx Logs
-mkdir -p ${VVV_PATH_TO_SITE}/log
-touch ${VVV_PATH_TO_SITE}/log/error.log
-touch ${VVV_PATH_TO_SITE}/log/access.log
+    # Make a database, if we don't already have one
+    echo -e "\nCreating database '${DB_NAME}' (if it's not already there)"
+    mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME}"
+    mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO wp@localhost IDENTIFIED BY 'wp';"
+    echo -e "\n DB operations done.\n\n"
+
+    # Nginx Logs
+    mkdir -p ${VVV_PATH_TO_SITE}/log
+    touch ${VVV_PATH_TO_SITE}/log/error.log
+    touch ${VVV_PATH_TO_SITE}/log/access.log
+
+    cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf.tmpl" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
+    sed -i "s#{{DOMAINS_HERE}}#${DOMAINS}#" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
+
+else
+    echo -e "\nSkip importing database... Website '${VVV_SITE_NAME}' already installed according to wp-cli"
+fi
 
 # Install and configure the latest stable version of WordPress
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-load.php" ]]; then
@@ -71,7 +82,7 @@ define('DISALLOW_FILE_EDIT', true);
 PHP
 fi
 
-if ! $(noroot wp core is-installed); then
+if ( ! $(noroot wp core is-installed) ); then
 
     ### WORDPRESS CORE ###
 
@@ -85,7 +96,7 @@ if ! $(noroot wp core is-installed); then
         INSTALL_COMMAND="install"
     fi
 
-    noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
+    noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="erik@ejoweb.nl" --admin_password="password"
 
     ##
     # PLUGINS
@@ -137,10 +148,8 @@ if ! $(noroot wp core is-installed); then
     # Reacties en avatars uitschakelen
 
 else
-    echo "Updating WordPress Stable..."
-    cd ${VVV_PATH_TO_SITE}/public_html
+    echo "Updating WordPress Stable..."    
     noroot wp core update --version="${WP_VERSION}"
 fi
 
-cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf.tmpl" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
-sed -i "s#{{DOMAINS_HERE}}#${DOMAINS}#" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
+
