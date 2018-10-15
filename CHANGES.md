@@ -1,3 +1,6 @@
+1.0-beta-6
+- Add support for tls-ca utility 
+
 1.0-beta-5
 - Fixed `wp core is-installed` check
 - dos2unix to fix line-ending 
