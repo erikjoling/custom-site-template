@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 # Provision WordPress Stable
 
-# Get the first host specified in vvv-custom.yml. Fallback: <site-name>.test
+ # fetch the first host as the primary domain. If none is available, generate a default using the site name 
 DOMAIN=`get_primary_host "${VVV_SITE_NAME}".test`
-
-# Get the hosts specified in vvv-custom.yml. Fallback: DOMAIN value
-DOMAINS=`get_hosts "${DOMAIN}"`
 
 # Get the site title specified in vvv-custom.yml. Fallback: DOMAIN value
 SITE_TITLE=`get_config_value 'site_title' "${DOMAIN}"`
@@ -16,17 +13,20 @@ WP_VERSION=`get_config_value 'wp_version' 'latest'`
 # Get the type of WP install (single/subdomain) specified in vvv-custom.yml. Fallback: Single
 WP_TYPE=`get_config_value 'wp_type' "single"`
 
-# Get the gravityforms licence specified in vvv-custom.yml. Fallback: empty string (evaluates to false in [brackets])
-GF_KEY=`get_config_value 'gf_licence' ""`
-
 # Get the database name specified in vvv-custom.yml. Fallback: site-name
 DB_NAME=`get_config_value 'db_name' "${VVV_SITE_NAME}"`
 DB_NAME=${DB_NAME//[\\\/\.\<\>\:\"\'\|\?\!\*-]/}
 
-cd ${VVV_PATH_TO_SITE}/public_html
+# cd ${VVV_PATH_TO_SITE}/public_html
 
-# 2. Create database and server-stuff if WordPress doesn't exist
+#
+# DATABASE
+#
+
+echo -e "\nStep 1: Database."
+
 if ( ! $(noroot wp core is-installed) ); then
+    echo -e "\nWordPress is not installed. Create database."
 
     # Make a database, if we don't already have one
     echo -e "\nCreating database '${DB_NAME}' (if it's not already there)"
@@ -34,26 +34,30 @@ if ( ! $(noroot wp core is-installed) ); then
     mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO wp@localhost IDENTIFIED BY 'wp';"
     echo -e "\n DB operations done.\n\n"
 
-    # Nginx Logs
-    mkdir -p ${VVV_PATH_TO_SITE}/log
-    touch ${VVV_PATH_TO_SITE}/log/error.log
-    touch ${VVV_PATH_TO_SITE}/log/access.log
-
-    cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf.tmpl" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
-    sed -i "s#{{DOMAINS_HERE}}#${DOMAINS}#" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
-
 else
-    echo -e "\nSkip importing database... Website '${VVV_SITE_NAME}' already installed according to wp-cli"
+    echo -e "\nWordPress is already installed. Continue."
 fi
 
-# Install and configure the latest stable version of WordPress
+#
+# WORDPRESS CORE
+#
+
+echo -e "\nStep 2: WordPress Core."
+
+# If WordPress is not already installed:
+# Download, setup wp-config and install the latest stable version of WordPress
+
+# Download
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-load.php" ]]; then
+    echo -e "\nCould not find WordPress in '${VVV_PATH_TO_SITE}/public_html/'. Download WordPress Core."
     echo "Downloading WordPress..."
     noroot wp core download --version="${WP_VERSION}" --locale=nl_NL
 fi
 
+# Setup wp-config
 if [[ ! -f "${VVV_PATH_TO_SITE}/public_html/wp-config.php" ]]; then
-    echo "Configuring WordPress Stable..."
+    echo -e "\nCould not find wp-config.php in '${VVV_PATH_TO_SITE}/public_html/'. Set up wp-config.php."
+    echo "Setting up WordPress Config..."
     noroot wp core config --dbname="${DB_NAME}" --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
 /**
  * CUSTOM 
@@ -82,7 +86,10 @@ define('DISALLOW_FILE_EDIT', true);
 PHP
 fi
 
+# Install
 if ( ! $(noroot wp core is-installed) ); then
+
+    echo -e "\nWordPress is not installed. Install WordPress."
 
     ### WORDPRESS CORE ###
 
@@ -105,29 +112,12 @@ if ( ! $(noroot wp core is-installed) ); then
     # Remove default plugins
     noroot wp plugin uninstall hello akismet
 
-    # Install GitHub Updater (without gitconfig stuff)
-    noroot wp plugin install https://github.com/afragen/github-updater/archive/master.zip --force --activate
-
     # Install common plugins
     noroot wp plugin install wordpress-seo regenerate-thumbnails wp-comment-humility safe-redirect-manager --activate
-
-    ## Install Gravity Forms (license key is required either in the GF_LICENSE_KEY constant or the --key option.)
-    # noroot wp plugin install gravityformscli --activate
-    # noroot wp gf install --key="{$GF_KEY}"
-    # Euro valuta
-    # No css output
-    # Sample form
 
     ##
     # THEME
     ##
-
-    # Install and activate EJO Starter Theme
-    noroot wp theme install https://github.com/erikjoling/ejo-starter-theme/archive/master.zip --force --activate
-
-    # Install and activate EJO Starter Theme (OLD)
-    # git clone https://github.com/erikjoling/ejo-starter-theme.git ${VVV_PATH_TO_SITE}/public_html/wp-content/themes/ejo-starter-theme
-    # noroot wp theme activate ejo-starter-theme
 
     # Remove default themes
     noroot wp theme uninstall twentyfifteen twentysixteen twentyseventeen
@@ -138,21 +128,26 @@ if ( ! $(noroot wp core is-installed) ); then
  
     # Remove default Widgets from sidebars
     noroot wp widget delete recent-comments-2 search-2 recent-posts-2 archives-2 categories-2 meta-2
-
-    # Import default content
-    # Timezone?
-    # Subtitle?
-    # Permalink settings?
-    # Statische pagina home als voorpagina instellen
-    # Zoekmachines blokkeren
-    # Reacties en avatars uitschakelen
-
-else
-    echo "Updating WordPress Stable..."    
-    noroot wp core update --version="${WP_VERSION}"
 fi
 
-# SSL
+#
+# NGINX
+#
+
+echo -e "\nStep 3: NGINX."
+
+# Nginx Logs
+echo "Setting up logs..."
+mkdir -p ${VVV_PATH_TO_SITE}/log
+touch ${VVV_PATH_TO_SITE}/log/error.log
+touch ${VVV_PATH_TO_SITE}/log/access.log
+
+# Nginx Configuration
+echo "Setting up configuration..."
+cp -f "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf.tmpl" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
+
+# SSL/TLS
+echo "Setting up ssl/tls..."
 if [ -n "$(type -t is_utility_installed)" ] && [ "$(type -t is_utility_installed)" = function ] && `is_utility_installed core tls-ca`; then
     sed -i "s#{{TLS_CERT}}#ssl_certificate /vagrant/certificates/${VVV_SITE_NAME}/dev.crt;#" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"
     sed -i "s#{{TLS_KEY}}#ssl_certificate_key /vagrant/certificates/${VVV_SITE_NAME}/dev.key;#" "${VVV_PATH_TO_SITE}/provision/vvv-nginx.conf"

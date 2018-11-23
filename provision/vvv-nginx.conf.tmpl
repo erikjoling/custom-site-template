@@ -1,7 +1,7 @@
 server {
     listen       80;
     listen       443 ssl;
-    server_name  {{DOMAINS_HERE}};
+    server_name  {vvv_hosts};
     root         {vvv_path_to_site}/public_html;
 
     error_log    {vvv_path_to_site}/log/error.log;
@@ -10,7 +10,7 @@ server {
     set          $upstream {upstream};
 
     {{TLS_CERT}}
-	{{TLS_KEY}}
+    {{TLS_KEY}}
 
     include      /etc/nginx/nginx-wp-common.conf;
 }
